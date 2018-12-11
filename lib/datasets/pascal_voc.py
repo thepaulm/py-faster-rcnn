@@ -184,11 +184,15 @@ class pascal_voc(imdb):
         """
         filename = os.path.join(self._data_path, 'Annotations', index + '.xml')
         tree = ET.parse(filename)
+        return self._load_pascal_annotation_et(tree)
+
+    def _load_pascal_annotation_et(self, tree):
+
         objs = tree.findall('object')
         if not self.config['use_diff']:
             # Exclude the samples labeled as difficult
             non_diff_objs = [
-                obj for obj in objs if int(obj.find('difficult').text) == 0]
+                obj for obj in objs if obj.find('difficult') is None or int(obj.find('difficult').text) == 0]
             # if len(non_diff_objs) != len(objs):
             #     print 'Removed {} difficult objects'.format(
             #         len(objs) - len(non_diff_objs))
