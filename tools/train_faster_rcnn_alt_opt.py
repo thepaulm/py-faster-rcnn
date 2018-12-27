@@ -228,6 +228,7 @@ if __name__ == '__main__':
     print 'Stage 1 RPN, init from ImageNet model'
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 
+    debugging = False
     cfg.TRAIN.SNAPSHOT_INFIX = 'stage1'
     mp_kwargs = dict(
             queue=mp_queue,
@@ -236,10 +237,15 @@ if __name__ == '__main__':
             solver=solvers[0],
             max_iters=max_iters[0],
             cfg=cfg)
-    p = mp.Process(target=train_rpn, kwargs=mp_kwargs)
-    p.start()
-    rpn_stage1_out = mp_queue.get()
-    p.join()
+
+    if debugging:
+        train_rpn(**mp_kwargs)
+        rpn_stage1_out = mp_queue.get()
+    else:
+        p = mp.Process(target=train_rpn, kwargs=mp_kwargs)
+        p.start()
+        rpn_stage1_out = mp_queue.get()
+        p.join()
 
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     print 'Stage 1 RPN, generate proposals'

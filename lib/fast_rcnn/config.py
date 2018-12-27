@@ -35,15 +35,18 @@ __C.TRAIN = edict()
 
 # Scales to use during training (can list multiple scales)
 # Each scale is the pixel size of an image's shortest side
-__C.TRAIN.SCALES = (600,)
+# __C.TRAIN.SCALES = (600,)
+__C.TRAIN.SCALES = (1024,)
 
 # Max pixel size of the longest side of a scaled input image
-__C.TRAIN.MAX_SIZE = 1000
+# __C.TRAIN.MAX_SIZE = 1000
+__C.TRAIN.MAX_SIZE = 1400
 
 # Images to use per minibatch
 __C.TRAIN.IMS_PER_BATCH = 2
 
 # Minibatch size (number of regions of interest [ROIs])
+# __C.TRAIN.BATCH_SIZE = 128
 __C.TRAIN.BATCH_SIZE = 128
 
 # Fraction of minibatch that is labeled foreground (i.e. class > 0)
@@ -107,6 +110,7 @@ __C.TRAIN.RPN_CLOBBER_POSITIVES = False
 # Max number of foreground examples
 __C.TRAIN.RPN_FG_FRACTION = 0.5
 # Total number of examples
+# __C.TRAIN.RPN_BATCHSIZE = 256
 __C.TRAIN.RPN_BATCHSIZE = 256
 # NMS threshold used on RPN proposals
 __C.TRAIN.RPN_NMS_THRESH = 0.7
