@@ -26,6 +26,10 @@ import multiprocessing as mp
 import cPickle
 import shutil
 
+
+default_max_iters = [80000, 40000, 80000, 40000]
+cfg_max_iters = default_max_iters
+
 def parse_args():
     """
     Parse input arguments
@@ -49,6 +53,7 @@ def parse_args():
     parser.add_argument('--set', dest='set_cfgs',
                         help='set config keys', default=None,
                         nargs=argparse.REMAINDER)
+    parser.add_argument('--max-iters', help='max_iters for get_solvers')
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -68,6 +73,7 @@ def get_roidb(imdb_name, rpn_file=None):
     return roidb, imdb
 
 def get_solvers(net_name):
+    global cfg_max_iters
     # Faster R-CNN Alternating Optimization
     n = 'faster_rcnn_alt_opt'
     # Solver for each training stage
@@ -77,7 +83,7 @@ def get_solvers(net_name):
                [net_name, n, 'stage2_fast_rcnn_solver30k40k.pt']]
     solvers = [os.path.join(cfg.MODELS_DIR, *s) for s in solvers]
     # Iterations for each training stage
-    max_iters = [80000, 40000, 80000, 40000]
+    max_iters = cfg_max_iters
     # max_iters = [100, 100, 100, 100]
     # Test prototxt for the RPN
     rpn_test_prototxt = os.path.join(
@@ -211,6 +217,9 @@ if __name__ == '__main__':
     if args.set_cfgs is not None:
         cfg_from_list(args.set_cfgs)
     cfg.GPU_ID = args.gpu_id
+
+    if args.max_iters is not None:
+        cfg_max_iters = [int(i) for i in args.max_iters.split(',')]
 
     # --------------------------------------------------------------------------
     # Pycaffe doesn't reliably free GPU memory when instantiated nets are
